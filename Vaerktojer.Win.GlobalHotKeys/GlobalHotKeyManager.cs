@@ -2,14 +2,14 @@
 
 namespace Vaerktojer.Win.GlobalHotKeys;
 
-public sealed class GlobalHotKeyManager : IDisposable
+public sealed class GlobalHotKeyManager : IGlobalHotKeyManager, IDisposable
 {
     private readonly HotKeyManager _hotKeyManager = new();
     private readonly List<IDisposable?> _hotKeyRegistrations = [];
     private IDisposable? _observableHandle;
     private bool _registered = false;
 
-    public void RegisterHotKeys(List<HotKeyRegistration> entries)
+    public void RegisterHotKeys(IList<HotKeyRegistration> entries)
     {
         if (_registered)
         {
@@ -22,7 +22,7 @@ public sealed class GlobalHotKeyManager : IDisposable
         _registered = true;
     }
 
-    private void InitializeHotKeyManager(List<HotKeyRegistration> registrations)
+    private void InitializeHotKeyManager(IList<HotKeyRegistration> registrations)
     {
         foreach (var registration in registrations)
         {

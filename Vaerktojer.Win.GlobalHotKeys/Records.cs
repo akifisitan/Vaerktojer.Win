@@ -2,7 +2,7 @@
 
 namespace Vaerktojer.Win.GlobalHotKeys;
 
-public record HotKeyRegistration(
+public sealed record HotKeyRegistration(
     Modifiers Modifiers,
     VirtualKeyCode VirtualKeyCode,
     Func<Task> Callback

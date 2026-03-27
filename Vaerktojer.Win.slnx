@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Vaerktojer.Win.Clipboard/Vaerktojer.Win.Clipboard.csproj" />
+  <Project Path="Vaerktojer.Win.GlobalHotKeys/Vaerktojer.Win.GlobalHotKeys.csproj" />
+</Solution>
