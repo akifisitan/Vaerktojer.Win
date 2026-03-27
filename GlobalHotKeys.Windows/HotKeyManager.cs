@@ -75,7 +75,7 @@ public sealed class HotKeyManager : IDisposable
         try
         {
             var wndProc = new WndProc(MessageHandler);
-            wndClassEx = WndClassExHelpers.fromWndProc(wndProc);
+            wndClassEx = WndClassExHelpers.FromWndProc(wndProc);
             registeredClass = RegisterClassEx(ref wndClassEx);
 
             hWnd = CreateWindowEx(

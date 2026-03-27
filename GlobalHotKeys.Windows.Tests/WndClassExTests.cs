@@ -17,7 +17,7 @@ public sealed class WndClassExTests
         const string className = "class";
         var wndProc = new WndProc(MessageHandler);
 
-        var result = WndClassExHelpers.init(hInstance, className, wndProc);
+        var result = WndClassExHelpers.Init(hInstance, className, wndProc);
 
         Assert.Equal(hInstance, result.hInstance);
         Assert.NotEqual(0, result.cbSize);

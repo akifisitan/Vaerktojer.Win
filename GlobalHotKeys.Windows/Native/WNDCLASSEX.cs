@@ -1,13 +1,12 @@
 using System.Runtime.InteropServices;
 using GlobalHotKeys.Native.Types;
+using NativeWndClassEx = GlobalHotKeys.Native.Types.WNDCLASSEX;
 
 namespace GlobalHotKeys.Native;
 
-using NativeWndClassEx = GlobalHotKeys.Native.Types.WNDCLASSEX;
-
-public static class WNDCLASSEX
+internal static class WNDCLASSEX
 {
-    public static NativeWndClassEx init(IntPtr hInstance, string className, WndProc wndProc)
+    public static NativeWndClassEx Init(IntPtr hInstance, string className, WndProc wndProc)
     {
         return new NativeWndClassEx
         {
@@ -18,10 +17,10 @@ public static class WNDCLASSEX
         };
     }
 
-    public static NativeWndClassEx fromWndProc(WndProc wndProc)
+    public static NativeWndClassEx FromWndProc(WndProc wndProc)
     {
         var hInstance = Functions.GetModuleHandle(null);
         var className = $"GlobalHotKeys-{Guid.NewGuid():N}";
-        return init(hInstance, className, wndProc);
+        return Init(hInstance, className, wndProc);
     }
 }

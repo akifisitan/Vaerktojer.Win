@@ -1,11 +1,10 @@
 using System.Runtime.InteropServices;
 using GlobalHotKeys.Native.Types;
+using NativeWndClassEx = GlobalHotKeys.Native.Types.WNDCLASSEX;
 
 namespace GlobalHotKeys.Native;
 
-using NativeWndClassEx = GlobalHotKeys.Native.Types.WNDCLASSEX;
-
-public static class Functions
+internal static class Functions
 {
     private const string Kernel32 = "Kernel32";
     private const string User32 = "User32";
