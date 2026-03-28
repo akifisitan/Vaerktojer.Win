@@ -7,6 +7,7 @@
     <PackageId>GlobalHotKeys.Windows</PackageId>
     <RootNamespace>GlobalHotKeys</RootNamespace>
     <NoWarn>$(NoWarn);CA1069</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Reactive" Version="6.1.0" />

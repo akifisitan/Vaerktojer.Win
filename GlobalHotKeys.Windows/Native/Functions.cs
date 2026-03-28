@@ -4,30 +4,25 @@ using NativeWndClassEx = GlobalHotKeys.Native.Types.WNDCLASSEX;
 
 namespace GlobalHotKeys.Native;
 
-internal static class Functions
+internal static partial class Functions
 {
     private const string Kernel32 = "Kernel32";
     private const string User32 = "User32";
 
-    [DllImport(Kernel32, SetLastError = true, CharSet = CharSet.Unicode)]
-    public static extern IntPtr GetModuleHandle(string? lpModuleName);
+    [LibraryImport(Kernel32, SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+    public static partial IntPtr GetModuleHandle(string? lpModuleName);
 
-    [DllImport(
-        User32,
-        SetLastError = true,
-        CharSet = CharSet.Unicode,
-        EntryPoint = "RegisterClassExW"
-    )]
-    public static extern ushort RegisterClassEx(ref NativeWndClassEx lpwcx);
+    [LibraryImport(User32, EntryPoint = "RegisterClassExW", SetLastError = true)]
+    public static partial ushort RegisterClassEx(ref NativeWndClassEx lpwcx);
 
-    [DllImport(
+    [LibraryImport(
         User32,
+        EntryPoint = "UnregisterClassW",
         SetLastError = true,
-        CharSet = CharSet.Unicode,
-        EntryPoint = "UnregisterClassW"
+        StringMarshalling = StringMarshalling.Utf16
     )]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool UnregisterClass(string lpClassName, IntPtr hInstance);
+    public static partial bool UnregisterClass(string lpClassName, IntPtr hInstance);
 
     public static IntPtr CreateWindowEx(
         int dwExStyle,
@@ -87,13 +82,13 @@ internal static class Functions
             lpParam
         );
 
-    [DllImport(
+    [LibraryImport(
         User32,
+        EntryPoint = "CreateWindowExW",
         SetLastError = true,
-        CharSet = CharSet.Unicode,
-        EntryPoint = "CreateWindowExW"
+        StringMarshalling = StringMarshalling.Utf16
     )]
-    private static extern IntPtr CreateWindowExCore(
+    private static partial IntPtr CreateWindowExCore(
         int dwExStyle,
         IntPtr lpClassName,
         string? lpWindowName,
@@ -108,45 +103,45 @@ internal static class Functions
         IntPtr lpParam
     );
 
-    [DllImport(User32, SetLastError = true)]
+    [LibraryImport(User32, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool DestroyWindow(IntPtr hwnd);
+    public static partial bool DestroyWindow(IntPtr hwnd);
 
-    [DllImport(User32)]
-    public static extern IntPtr DefWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+    [LibraryImport(User32)]
+    public static partial IntPtr DefWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-    [DllImport(User32, SetLastError = true)]
+    [LibraryImport(User32, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool RegisterHotKey(
+    public static partial bool RegisterHotKey(
         IntPtr hWnd,
         int id,
         Modifiers fsModifiers,
         VirtualKeyCode vk
     );
 
-    [DllImport(User32, SetLastError = true)]
+    [LibraryImport(User32, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+    public static partial bool UnregisterHotKey(IntPtr hWnd, int id);
 
-    [DllImport(User32, SetLastError = true)]
-    public static extern int GetMessage(
+    [LibraryImport(User32, SetLastError = true)]
+    public static partial int GetMessage(
         ref tagMSG lpMsg,
         IntPtr hwnd,
         uint wMsgFilterMin,
         uint wMsgFilterMax
     );
 
-    [DllImport(User32, SetLastError = true)]
+    [LibraryImport(User32, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+    public static partial bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-    [DllImport(User32, SetLastError = true)]
+    [LibraryImport(User32, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool TranslateMessage(ref tagMSG lpMsg);
+    public static partial bool TranslateMessage(ref tagMSG lpMsg);
 
-    [DllImport(User32, SetLastError = true)]
-    public static extern IntPtr DispatchMessage(ref tagMSG lpMsg);
+    [LibraryImport(User32, SetLastError = true)]
+    public static partial IntPtr DispatchMessage(ref tagMSG lpMsg);
 
-    [DllImport(User32, SetLastError = true)]
-    public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+    [LibraryImport(User32, SetLastError = true)]
+    public static partial IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 }
