@@ -1,6 +1,3 @@
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using GlobalHotKeys.Native;
 using GlobalHotKeys.Native.Types;
 using static GlobalHotKeys.Native.Functions;
 using WndClassExHelpers = GlobalHotKeys.Native.WNDCLASSEX;
@@ -13,29 +10,43 @@ public sealed class HotKeyManager : IDisposable
     private const uint RegisterHotKeyMsg = 0x0400u;
     private const uint UnregisterHotKeyMsg = 0x0401u;
 
-    private readonly Subject<HotKey> _hotKey = new();
+    private readonly Lock _subscriptionLock = new();
+    private readonly List<Action<HotKey>> _subscriptions = [];
     private readonly Thread _thread;
-    private readonly IntPtr _windowHandle;
     private bool _disposed;
 
     public HotKeyManager()
     {
-        (_thread, _windowHandle) = StartMessageLoop();
+        (_thread, WindowHandle) = StartMessageLoop();
     }
+
+    internal IntPtr WindowHandle { get; }
 
     public IRegistration Register(VirtualKeyCode key, Modifiers modifiers)
     {
         var result = SendMessage(
-            _windowHandle,
+            WindowHandle,
             RegisterHotKeyMsg,
             new IntPtr((int)key),
             new IntPtr((int)modifiers)
         );
 
-        return new Registration(_windowHandle, result);
+        return new Registration(WindowHandle, result);
     }
 
-    public IObservable<HotKey> HotKeyPressed => _hotKey.AsObservable();
+    public IDisposable Subscribe(Action<HotKey> handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        lock (_subscriptionLock)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            _subscriptions.Add(handler);
+        }
+
+        return new Subscription(this, handler);
+    }
 
     public void Dispose()
     {
@@ -46,9 +57,13 @@ public sealed class HotKeyManager : IDisposable
 
         _disposed = true;
 
-        PostMessage(_windowHandle, (uint)WindowMessage.WM_QUIT, IntPtr.Zero, IntPtr.Zero);
+        PostMessage(WindowHandle, (uint)WindowMessage.WM_QUIT, IntPtr.Zero, IntPtr.Zero);
         _thread.Join();
-        _hotKey.Dispose();
+
+        lock (_subscriptionLock)
+        {
+            _subscriptions.Clear();
+        }
     }
 
     private (Thread Thread, IntPtr WindowHandle) StartMessageLoop()
@@ -57,8 +72,10 @@ public sealed class HotKeyManager : IDisposable
             TaskCreationOptions.RunContinuationsAsynchronously
         );
 
-        var thread = new Thread(() => ThreadEntry(tcsWindowHandle));
-        thread.Name = "GlobalHotKeyManager Message Loop";
+        var thread = new Thread(() => ThreadEntry(tcsWindowHandle))
+        {
+            Name = "GlobalHotKeyManager Message Loop",
+        };
         thread.Start();
 
         return (thread, tcsWindowHandle.Task.GetAwaiter().GetResult());
@@ -204,7 +221,7 @@ public sealed class HotKeyManager : IDisposable
                 {
                     if (registrations.TryGetValue(wParam.ToInt32(), out var hotKey))
                     {
-                        _hotKey.OnNext(hotKey);
+                        PublishHotKey(hotKey);
                     }
 
                     return new IntPtr(1);
@@ -213,6 +230,29 @@ public sealed class HotKeyManager : IDisposable
                 default:
                     return DefWindowProc(windowHandle, message, wParam, lParam);
             }
+        }
+    }
+
+    private void PublishHotKey(HotKey hotKey)
+    {
+        Action<HotKey>[] handlers;
+
+        lock (_subscriptionLock)
+        {
+            handlers = _subscriptions.ToArray();
+        }
+
+        foreach (var handler in handlers)
+        {
+            handler(hotKey);
+        }
+    }
+
+    private void Unsubscribe(Action<HotKey> handler)
+    {
+        lock (_subscriptionLock)
+        {
+            _subscriptions.Remove(handler);
         }
     }
 
@@ -252,6 +292,22 @@ public sealed class HotKeyManager : IDisposable
             }
 
             SendMessage(windowHandle, UnregisterHotKeyMsg, new IntPtr(id), IntPtr.Zero);
+        }
+    }
+
+    private sealed class Subscription(HotKeyManager manager, Action<HotKey> handler) : IDisposable
+    {
+        private bool _disposed;
+
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
+            manager.Unsubscribe(handler);
         }
     }
 }

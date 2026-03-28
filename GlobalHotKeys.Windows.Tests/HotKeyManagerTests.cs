@@ -1,3 +1,4 @@
+using GlobalHotKeys.Native;
 using GlobalHotKeys.Native.Types;
 
 namespace GlobalHotKeys.Windows.Tests;
@@ -8,6 +9,46 @@ public sealed class HotKeyManagerTests
     public void CreateAndDisposeManager()
     {
         using var manager = new HotKeyManager();
+    }
+
+    [Fact]
+    public void SubscribeReturnsDisposableHandle()
+    {
+        using var manager = new HotKeyManager();
+
+        using var subscription = manager.Subscribe(_ => { });
+
+        Assert.NotNull(subscription);
+    }
+
+    [Fact]
+    public void SubscribeAfterDisposeThrowsObjectDisposedException()
+    {
+        var manager = new HotKeyManager();
+        manager.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => manager.Subscribe(_ => { }));
+    }
+
+    [Fact]
+    public void DisposeSubscriptionStopsFutureCallbacks()
+    {
+        using var manager = new HotKeyManager();
+        var callCount = 0;
+        var handler = manager.Subscribe(_ => callCount++);
+
+        handler.Dispose();
+
+        Functions.PostMessage(
+            manager.WindowHandle,
+            (uint)WindowMessage.WM_HOTKEY,
+            new IntPtr(123),
+            IntPtr.Zero
+        );
+
+        Thread.Sleep(50);
+
+        Assert.Equal(0, callCount);
     }
 
     [Fact]

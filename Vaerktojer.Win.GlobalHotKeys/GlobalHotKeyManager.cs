@@ -40,7 +40,7 @@ public sealed class GlobalHotKeyManager : IGlobalHotKeyManager, IDisposable
             );
         }
 
-        _observableHandle = _hotKeyManager.HotKeyPressed.Subscribe(hotKey =>
+        _observableHandle = _hotKeyManager.Subscribe(hotKey =>
         {
             _logger.ZLogDebug(
                 $"Hotkey pressed {hotKey} in thread: {Environment.CurrentManagedThreadId}"

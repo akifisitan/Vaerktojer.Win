@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using GlobalHotKeys;
 using GlobalHotKeys.Native.Types;
 
-var consoleLock = new object();
+Lock consoleLock = new();
 using var exitSignal = new ManualResetEventSlim(false);
 using var manager = new HotKeyManager();
 
@@ -29,7 +29,7 @@ foreach (var demoHotKey in demoHotKeys)
     registrations.Add(new RegistrationEntry(demoHotKey, registration));
 }
 
-using var subscription = manager.HotKeyPressed.Subscribe(hotKey =>
+using var subscription = manager.Subscribe(hotKey =>
 {
     var registration = registrations.FirstOrDefault(entry => entry.Registration.Id == hotKey.Id);
     var label = registration?.Definition.Label ?? "Unknown";

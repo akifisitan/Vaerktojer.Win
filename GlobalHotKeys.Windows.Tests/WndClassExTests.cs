@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using GlobalHotKeys.Native;
 using GlobalHotKeys.Native.Types;
 using WndClassExHelpers = GlobalHotKeys.Native.WNDCLASSEX;
 
