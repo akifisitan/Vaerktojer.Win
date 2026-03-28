@@ -1,9 +1,9 @@
-﻿using GlobalHotKeys.Native.Types;
+using GlobalHotKeys.Native.Types;
 
 namespace Vaerktojer.Win.GlobalHotKeys;
 
 public sealed record HotKeyRegistration(
     Modifiers Modifiers,
     VirtualKeyCode VirtualKeyCode,
-    Func<Task> Callback
+    Action Callback
 );
