@@ -71,10 +71,11 @@ public sealed class HotKeyManager : IDisposable
         var wndClassEx = default(GlobalHotKeys.Native.Types.WNDCLASSEX);
         var registeredClass = (ushort)0;
         var hWnd = IntPtr.Zero;
+        WndProc? wndProc = null;
 
         try
         {
-            var wndProc = new WndProc(MessageHandler);
+            wndProc = new WndProc(MessageHandler);
             wndClassEx = WndClassExHelpers.FromWndProc(wndProc);
             registeredClass = RegisterClassEx(ref wndClassEx);
 
@@ -117,6 +118,8 @@ public sealed class HotKeyManager : IDisposable
             {
                 UnregisterClass(wndClassEx.lpszClassName, hInstance);
             }
+
+            GC.KeepAlive(wndProc);
         }
 
         return;

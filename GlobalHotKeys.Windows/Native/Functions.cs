@@ -9,11 +9,43 @@ internal static partial class Functions
     private const string Kernel32 = "Kernel32";
     private const string User32 = "User32";
 
-    [LibraryImport(Kernel32, SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport(
+        Kernel32,
+        EntryPoint = "GetModuleHandleW",
+        SetLastError = true,
+        StringMarshalling = StringMarshalling.Utf16
+    )]
     public static partial IntPtr GetModuleHandle(string? lpModuleName);
 
+    public static unsafe ushort RegisterClassEx(ref NativeWndClassEx lpwcx)
+    {
+        fixed (char* menuName = lpwcx.lpszMenuName)
+        fixed (char* className = lpwcx.lpszClassName)
+        {
+            var nativeWndClassEx = new SourceGeneratorWndClassEx
+            {
+                cbSize = lpwcx.cbSize,
+                style = lpwcx.style,
+                lpfnWndProc = lpwcx.lpfnWndProc is null
+                    ? IntPtr.Zero
+                    : Marshal.GetFunctionPointerForDelegate(lpwcx.lpfnWndProc),
+                cbClsExtra = lpwcx.cbClsExtra,
+                cbWndExtra = lpwcx.cbWndExtra,
+                hInstance = lpwcx.hInstance,
+                hIcon = lpwcx.hIcon,
+                hCursor = lpwcx.hCursor,
+                hbrBackground = lpwcx.hbrBackground,
+                lpszMenuName = menuName,
+                lpszClassName = className,
+                hIconSm = lpwcx.hIconSm,
+            };
+
+            return RegisterClassExCore(in nativeWndClassEx);
+        }
+    }
+
     [LibraryImport(User32, EntryPoint = "RegisterClassExW", SetLastError = true)]
-    public static partial ushort RegisterClassEx(ref NativeWndClassEx lpwcx);
+    private static unsafe partial ushort RegisterClassExCore(in SourceGeneratorWndClassEx lpwcx);
 
     [LibraryImport(
         User32,
@@ -107,7 +139,7 @@ internal static partial class Functions
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool DestroyWindow(IntPtr hwnd);
 
-    [LibraryImport(User32)]
+    [LibraryImport(User32, EntryPoint = "DefWindowProcW")]
     public static partial IntPtr DefWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
     [LibraryImport(User32, SetLastError = true)]
@@ -123,7 +155,7 @@ internal static partial class Functions
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool UnregisterHotKey(IntPtr hWnd, int id);
 
-    [LibraryImport(User32, SetLastError = true)]
+    [LibraryImport(User32, EntryPoint = "GetMessageW", SetLastError = true)]
     public static partial int GetMessage(
         ref tagMSG lpMsg,
         IntPtr hwnd,
@@ -131,7 +163,7 @@ internal static partial class Functions
         uint wMsgFilterMax
     );
 
-    [LibraryImport(User32, SetLastError = true)]
+    [LibraryImport(User32, EntryPoint = "PostMessageW", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
@@ -139,9 +171,26 @@ internal static partial class Functions
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool TranslateMessage(ref tagMSG lpMsg);
 
-    [LibraryImport(User32, SetLastError = true)]
+    [LibraryImport(User32, EntryPoint = "DispatchMessageW", SetLastError = true)]
     public static partial IntPtr DispatchMessage(ref tagMSG lpMsg);
 
-    [LibraryImport(User32, SetLastError = true)]
+    [LibraryImport(User32, EntryPoint = "SendMessageW", SetLastError = true)]
     public static partial IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private unsafe struct SourceGeneratorWndClassEx
+    {
+        public int cbSize;
+        public int style;
+        public IntPtr lpfnWndProc;
+        public int cbClsExtra;
+        public int cbWndExtra;
+        public IntPtr hInstance;
+        public IntPtr hIcon;
+        public IntPtr hCursor;
+        public IntPtr hbrBackground;
+        public char* lpszMenuName;
+        public char* lpszClassName;
+        public IntPtr hIconSm;
+    }
 }
