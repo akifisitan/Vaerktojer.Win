@@ -23,12 +23,23 @@ public sealed class GlobalHotKeyManager : IGlobalHotKeyManager, IDisposable
         if (_registered)
         {
             throw new Exception(
-                $"Hotkeys can only be registered once per {nameof(GlobalHotKeyManager)} instance. Create a new instance to register new hotkeys."
+                $"Hotkeys can only be registered once per {nameof(GlobalHotKeyManager)} instance. Call UnregisterHotKeys() before registering new hotkeys."
             );
         }
 
         InitializeHotKeyManager(entries);
         _registered = true;
+    }
+
+    public void UnregisterHotKeys()
+    {
+        if (!_registered)
+        {
+            return;
+        }
+
+        DisposeRegistrations();
+        _registered = false;
     }
 
     private void InitializeHotKeyManager(IList<HotKeyRegistration> registrations)
@@ -60,13 +71,20 @@ public sealed class GlobalHotKeyManager : IGlobalHotKeyManager, IDisposable
 
     public void Dispose()
     {
+        DisposeRegistrations();
+        _hotKeyManager.Dispose();
+    }
+
+    private void DisposeRegistrations()
+    {
         _observableHandle?.Dispose();
+        _observableHandle = null;
 
         foreach (var registration in _hotKeyRegistrations)
         {
             registration?.Dispose();
         }
 
-        _hotKeyManager.Dispose();
+        _hotKeyRegistrations.Clear();
     }
 }
