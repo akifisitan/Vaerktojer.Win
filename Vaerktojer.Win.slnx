@@ -1,6 +1,6 @@
 <Solution>
-  <Project Path="Vaerktojer.Win.GlobalHotKeys.Demo/Vaerktojer.Win.GlobalHotKeys.Demo.csproj" />
-  <Project Path="Vaerktojer.Win.GlobalHotKeys.Tests/Vaerktojer.Win.GlobalHotKeys.Tests.csproj" />
-  <Project Path="Vaerktojer.Win.Clipboard/Vaerktojer.Win.Clipboard.csproj" />
-  <Project Path="Vaerktojer.Win.GlobalHotKeys/Vaerktojer.Win.GlobalHotKeys.csproj" />
+  <Project Path="Vaerktojer.Win.Clipboard/Vaerktojer.Win.Clipboard/Vaerktojer.Win.Clipboard.csproj" />
+  <Project Path="Vaerktojer.Win.GlobalHotKeys/Vaerktojer.Win.GlobalHotKeys.Demo/Vaerktojer.Win.GlobalHotKeys.Demo.csproj" />
+  <Project Path="Vaerktojer.Win.GlobalHotKeys/Vaerktojer.Win.GlobalHotKeys.Tests/Vaerktojer.Win.GlobalHotKeys.Tests.csproj" />
+  <Project Path="Vaerktojer.Win.GlobalHotKeys/Vaerktojer.Win.GlobalHotKeys/Vaerktojer.Win.GlobalHotKeys.csproj" />
 </Solution>
