@@ -1,8 +1,8 @@
 using System.Runtime.InteropServices;
-using GlobalHotKeys.Native.Types;
-using NativeWndClassEx = GlobalHotKeys.Native.Types.WNDCLASSEX;
+using Vaerktojer.Win.GlobalHotKeys.Native.Types;
+using NativeWndClassEx = Vaerktojer.Win.GlobalHotKeys.Native.Types.WNDCLASSEX;
 
-namespace GlobalHotKeys.Native;
+namespace Vaerktojer.Win.GlobalHotKeys.Native;
 
 internal static class WNDCLASSEX
 {

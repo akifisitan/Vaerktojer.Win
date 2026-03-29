@@ -1,10 +1,10 @@
-using GlobalHotKeys.Native.Types;
-using static GlobalHotKeys.Native.Functions;
-using WndClassExHelpers = GlobalHotKeys.Native.WNDCLASSEX;
+using Vaerktojer.Win.GlobalHotKeys.Native.Types;
+using static Vaerktojer.Win.GlobalHotKeys.Native.Functions;
+using WndClassExHelpers = Vaerktojer.Win.GlobalHotKeys.Native.WNDCLASSEX;
 
-namespace GlobalHotKeys;
+namespace Vaerktojer.Win.GlobalHotKeys;
 
-public sealed class HotKeyManager : IDisposable
+internal sealed class HotKeyManager : IDisposable
 {
     private const uint HotKeyMsg = 0x0312u;
     private const uint RegisterHotKeyMsg = 0x0400u;
@@ -85,7 +85,7 @@ public sealed class HotKeyManager : IDisposable
     {
         var hInstance = GetModuleHandle(null);
         var registrations = new Dictionary<int, HotKey>();
-        var wndClassEx = default(GlobalHotKeys.Native.Types.WNDCLASSEX);
+        var wndClassEx = default(Vaerktojer.Win.GlobalHotKeys.Native.Types.WNDCLASSEX);
         var registeredClass = (ushort)0;
         var hWnd = IntPtr.Zero;
         WndProc? wndProc = null;

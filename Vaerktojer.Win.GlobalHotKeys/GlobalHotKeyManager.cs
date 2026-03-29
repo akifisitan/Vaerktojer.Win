@@ -1,5 +1,4 @@
-using GlobalHotKeys;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ZLogger;
 
 namespace Vaerktojer.Win.GlobalHotKeys;

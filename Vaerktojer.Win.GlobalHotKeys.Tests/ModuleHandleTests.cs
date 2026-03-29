@@ -1,6 +1,6 @@
-using GlobalHotKeys.Native;
+using Vaerktojer.Win.GlobalHotKeys.Native;
 
-namespace GlobalHotKeys.Windows.Tests;
+namespace Vaerktojer.Win.GlobalHotKeys.Tests;
 
 public sealed class ModuleHandleTests
 {

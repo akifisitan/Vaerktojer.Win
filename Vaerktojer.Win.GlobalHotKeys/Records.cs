@@ -1,5 +1,3 @@
-using GlobalHotKeys.Native.Types;
-
 namespace Vaerktojer.Win.GlobalHotKeys;
 
 public sealed record HotKeyRegistration(

@@ -1,8 +1,8 @@
 using System.Runtime.InteropServices;
-using GlobalHotKeys.Native.Types;
-using WndClassExHelpers = GlobalHotKeys.Native.WNDCLASSEX;
+using Vaerktojer.Win.GlobalHotKeys.Native.Types;
+using WndClassExHelpers = Vaerktojer.Win.GlobalHotKeys.Native.WNDCLASSEX;
 
-namespace GlobalHotKeys.Windows.Tests;
+namespace Vaerktojer.Win.GlobalHotKeys.Tests;
 
 public sealed class WndClassExTests
 {
@@ -22,6 +22,9 @@ public sealed class WndClassExTests
         Assert.NotEqual(0, result.cbSize);
         Assert.NotNull(result.lpfnWndProc);
         Assert.Equal(className, result.lpszClassName);
-        Assert.Equal(Marshal.SizeOf<GlobalHotKeys.Native.Types.WNDCLASSEX>(), result.cbSize);
+        Assert.Equal(
+            Marshal.SizeOf<Vaerktojer.Win.GlobalHotKeys.Native.Types.WNDCLASSEX>(),
+            result.cbSize
+        );
     }
 }

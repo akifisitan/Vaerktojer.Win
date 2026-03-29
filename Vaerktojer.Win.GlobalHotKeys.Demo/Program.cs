@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
-using GlobalHotKeys;
-using GlobalHotKeys.Native.Types;
+using Vaerktojer.Win.GlobalHotKeys;
 
 Lock consoleLock = new();
 using var exitSignal = new ManualResetEventSlim(false);

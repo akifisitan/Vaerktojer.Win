@@ -1,7 +1,8 @@
-using GlobalHotKeys.Native;
-using GlobalHotKeys.Native.Types;
+using Vaerktojer.Win.GlobalHotKeys;
+using Vaerktojer.Win.GlobalHotKeys.Native;
+using Vaerktojer.Win.GlobalHotKeys.Native.Types;
 
-namespace GlobalHotKeys.Windows.Tests;
+namespace Vaerktojer.Win.GlobalHotKeys.Tests;
 
 public sealed class HotKeyManagerTests
 {

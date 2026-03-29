@@ -18,6 +18,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GlobalHotKeys.Windows\GlobalHotKeys.Windows.csproj" />
+    <ProjectReference Include="..\Vaerktojer.Win.GlobalHotKeys\Vaerktojer.Win.GlobalHotKeys.csproj" />
   </ItemGroup>
 </Project>
